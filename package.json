@@ -1,0 +1,50 @@
+{
+  "name": "java---json-rw---electron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "build-angular": "cd angular-app && ng build",
+    "build-main": "webpack --config webpack.main.js",
+    "build-preload": "webpack --config webpack.preload.js",
+    "start-angular": "cd angular-app && ng serve",
+    "start": "npm run build-main && npm run build-preload && electron .",
+    "dist": "npm run build-angular && npm run build-main && npm run build-preload && electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "electron": "^36.4.0",
+    "electron-builder": "^26.0.12",
+    "ts-jest": "^29.1.1",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "@types/node": "^24.0.3"
+  },
+  "build": {
+    "appId": "Contacts Manager",
+    "productName": "Contacts Manager",
+    "files": [
+      "dist/**/*",
+      "angular-app/dist/**/*",
+      "preload.js",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "dist/main.js"
+    },
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    }
+  }
+}
