@@ -1,4 +1,4 @@
-package com.example.userservice.Util;
+package com.developer.contactsservice.Util;
 
 public class UniqueIdGenerator
 {
