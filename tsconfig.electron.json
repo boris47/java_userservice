@@ -1,14 +1,28 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2020", "DOM"],
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
     "strict": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "rootDir": "src",
-    "outDir": "dist"
+    "rootDir": "./",
+    "outDir": "dist",
+    "baseUrl": "./",
+    "paths": {
+      "@shared/*": ["./shared/*"]
+    }
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "angular-app"]
+  "include": [
+    "src/**/*.ts",
+    "shared/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "angular-app"
+  ]
 }

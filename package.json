@@ -4,28 +4,32 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
-    "build-angular": "cd angular-app && ng build",
+    "build-angular-dev": "cd angular-app && ng build --configuration development",
+    "build-angular-prd": "cd angular-app && ng build",
     "build-main": "webpack --config webpack.main.js",
     "build-preload": "webpack --config webpack.preload.js",
     "start-angular": "cd angular-app && ng serve",
-    "start": "npm run build-main && npm run build-preload && electron .",
-    "dist": "npm run build-angular && npm run build-main && npm run build-preload && electron-builder"
+    "start": "npm run build-angular-dev && npm run build-main && npm run build-preload && electron .",
+    "dist": "npm run build-angular-prd && npm run build-main && npm run build-preload && cross-env ELECTRON_BUILDER_CACHE=./buildTools NODE_ENV=production electron-builder"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "contacts",
+    "list"
+  ],
+  "author": "Roberto Leogrande",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^29.5.12",
+    "@types/node": "^24.0.3",
+    "cross-env": "^7.0.3",
     "electron": "^36.4.0",
     "electron-builder": "^26.0.12",
-    "ts-jest": "^29.1.1",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
     "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@types/node": "^24.0.3"
+    "axios": "^1.10.0"
   },
   "build": {
     "appId": "Contacts Manager",

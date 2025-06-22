@@ -1,6 +1,13 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('electronAPI',
+contextBridge.exposeInMainWorld('ICP_RendererInterface',
 {
-  sendFormData: (data: any) => ipcRenderer.send('form-data', data)
+	notify: ( channel: string, ...data: any[] ) => ipcRenderer.send(channel, ...data),
+	
+	request: async ( channel: string, ...data: any[] ) => await ipcRenderer.invoke(channel, ...data),
+});
+
+contextBridge.exposeInMainWorld("env", 
+{
+	NODE_ENV: process.env.NODE_ENV
 });

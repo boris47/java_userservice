@@ -1,0 +1,6 @@
+<h1>Login.Comp</h1>
+<basic-form (onFormDataSubmit)="tryLogin($event)" [disabled]="isProcessing"/>
+
+@if (isProcessing) {
+  <p>Loading...</p>
+}

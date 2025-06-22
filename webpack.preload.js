@@ -1,25 +1,28 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'development',
-  target: 'electron-preload',
   entry: './src/preload.ts',
+  target: 'electron-preload',
+  mode: 'development',
   module: {
     rules: [
       {
         test: /\.ts$/,
-        include: /src/,
-        use: {
+        include: [
+                 path.resolve(__dirname, 'src'),
+                 path.resolve(__dirname, 'shared')
+               ],
+        use: [{
           loader: 'ts-loader',
           options: {
             configFile: 'tsconfig.electron.json'
           }
-        }
+        }]
       }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
   },
   output: {
     filename: 'preload.js',

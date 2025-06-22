@@ -1,0 +1,21 @@
+<form (ngSubmit)="onFormSubmit()" class="size-96">
+	<custom-input
+		label="Username"
+		name="username"
+		type="text"
+		placeholder="Username"
+		[(model)]="formData.username"
+		required autofocus
+	></custom-input>
+
+	<custom-input
+		label="Password"
+		name="password"
+		type="password"
+		placeholder="Password"
+		[(model)]="formData.password"
+		required 
+	></custom-input>
+
+	<button type="submit" [disabled]="disabled">Login</button>
+</form>

@@ -4,10 +4,21 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [
+      "@angular/localize"
+    ],
+    "baseUrl": "./",
+  },
+  "angularCompilerOptions": {
+    "enableControlFlow": true,
+    "enableIvy": true,
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "disableZoneJS": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "jest.setup.ts"
   ],
   "exclude": [
     "src/**/*.spec.ts"

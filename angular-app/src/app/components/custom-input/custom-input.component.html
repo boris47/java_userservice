@@ -1,0 +1,14 @@
+<div class="flex-row">
+	<label [for]="name" class="mb-1 font-bold text-cyan-900">
+		{{ label }}
+	</label>
+
+	<input class="text-cyan-900"
+		[type]="type"
+		[id]="name"
+		[name]="name"
+		[value]="model"
+		(input)="handleInput($event)"
+		[placeholder]="placeholder"
+	/>
+</div>
