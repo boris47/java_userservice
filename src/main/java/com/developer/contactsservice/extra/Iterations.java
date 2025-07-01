@@ -1,4 +1,4 @@
-package com.example.jsonmodifier;
+package com.developer.contactsservice.extra;
 
 import java.util.*;
 

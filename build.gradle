@@ -4,7 +4,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'com.example'
+group = 'com.developer'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17' // o 21 se usi JDK 21
 
@@ -25,21 +25,49 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	
+	// Usa implementation per quasi tutto il codice applicativo
+	// Usa runtimeOnly per driver o plugin che servono solo a runtime
+	// Usa testImplementation e testRuntimeOnly per i test
+	
+	// Usa api se una dipendenza è parte della API pubblica (cioè: classi che usi nel tuo public interface)
+	// Usa implementation se è un dettaglio interno della tua libreria
+	
+	// Scrivo codice con questa lib + serve in esecuzione? → implementation
+	// Serve solo mentre compilo (es. Lombok)? → compileOnly + annotationProcessor
+	// Solo per i test? → testImplementation / testRuntimeOnly
+	// Serve solo a runtime? → runtimeOnly
+	// La libreria espone classi che chi usa il mio modulo deve vedere? → api (solo per librerie)
+	
+	// Dipendenza necessaria a compilare e disponibile anche a runtime
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.modelmapper:modelmapper:3.1.1'
+    
+	// Serve solo a compilare, ma non sarà inclusa a runtime
+	compileOnly 'org.projectlombok:lombok'
+    
+	// Usata dai processor (es. Lombok) durante la compilazione per generare codice
+	annotationProcessor 'org.projectlombok:lombok'
+	
+	// Come implementation, ma solo per il codice di test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	// Serve solo a runtime durante l'esecuzione dei test
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testRuntimeOnly 'org.mockito:mockito-junit-jupiter'
+	
+	// Serve solo a runtime, non è usata durante la compilazione
 	runtimeOnly 'org.postgresql:postgresql'
 	
-	implementation 'org.modelmapper:modelmapper:3.1.1'
+	// È una libreria che espone API che devono essere visibili da chi dipende dal tuo modulo
+	// api
 }
 
 springBoot {
-    mainClass = 'com.example.userservice.UserServiceApplication'
+    mainClass = 'com.developer.contactsservice.ContactsServiceApplication'
 }
 
 

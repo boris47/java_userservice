@@ -5,7 +5,7 @@ public record ContactResponseDto(
 		String name,
 		String surname,
 		String number,
-		String LastUpdate,
-		String ImageURL,
+		String lastUpdate,
+		String imageURL,
 		String[] tags
 ) {}

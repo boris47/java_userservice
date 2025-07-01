@@ -1,13 +1,14 @@
-package com.example.jsonmodifier;
+package com.developer.contactsservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class JsonmodifierApplicationTests {
-
+class ContactsServiceApplicationTests
+{
 	@Test
-	void contextLoads() {
+	void contextLoads()
+	{
+		
 	}
-
 }

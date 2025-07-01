@@ -1,10 +1,10 @@
 package com.developer.contactsservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.developer.contactsservice.Util.UniqueIdGenerator;
@@ -13,35 +13,75 @@ import com.developer.contactsservice.dto.ContactResponseDto;
 import com.developer.contactsservice.model.Contact;
 import com.developer.contactsservice.model.Tag;
 import com.developer.contactsservice.repository.ContactsRepository;
+import com.developer.contactsservice.service.ContactsService.IllegalContactUpsert.Illegal;
 
-import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ContactsService
 {
-	private static final Sort kSort = Sort.by(Direction.ASC, "name");
-	
 	private final ContactsRepository contactRepository;
 	private final TagService tagService;
 	private final ModelMapper modelMapper;
 	
 	
-	public Contact upsert(ContactUpsertDto dto)
+	public Page<Contact> findByNameOrSurnameOrNumber(String query, Pageable pageable)
+	{
+		if (query != null && !query.isBlank())
+		{
+			return contactRepository.findByNameOrSurnameOrNumber(query, pageable);
+		}
+		
+		return contactRepository.findAll(pageable);
+	//	if (query != null && query.length() > 0)
+	//	{
+	//		Contact probe = new Contact();
+	//		{
+	//			probe.setName(query);
+	//			probe.setSurname(query);
+	//			probe.setNumber(query);
+	//		}
+	//		
+	//		ExampleMatcher matcher = ExampleMatcher.matchingAny()
+	//				.withMatcher("name", match -> match.contains().ignoreCase())
+	//				.withMatcher("surname", match -> match.contains().ignoreCase())
+	//				.withMatcher("number", match -> match.contains().ignoreCase())
+	//		;
+	//		
+	//		Example<Contact> example = Example.of(probe, matcher);
+	//		Pageable pageable = PageRequest.of(page, size, kSort);
+	//		return contactRepository.findAll(example, pageable);
+	//	}
+	//	
+	//	// Not filtered
+	//	Pageable pageable = PageRequest.of(page, size, kSort);
+	//	return contactRepository.findAll(pageable);
+	}
+	
+	
+	////////////////////////////////////////////////////////////////////////
+	
+	
+	public Contact upsert(ContactUpsertDto dto) throws IllegalContactUpsert
     {
 		Contact contact;
 		Optional<Contact> existing;
 		
 		if (dto.uniqueId() != null) // Upsert
 		{
+			log.debug("Trying to upsert contact " + dto.uniqueId());
 			existing = contactRepository.findById(dto.uniqueId());
 			if (existing.isEmpty())
 			{
-				return null;
+				throw new IllegalContactUpsert(Illegal.NOT_FOUND);
 			}
 			
 			contact = existing.get();
+			
+			// Debug purpose
+			String name = contact.getName();
 			
 			if (dto.name() != null) contact.setName(dto.name());
 			if (dto.surname() != null) contact.setSurname(dto.surname());
@@ -49,17 +89,24 @@ public class ContactsService
 			contact.setSecondName(dto.secondName());
 			contact.setEmail(dto.email());
 			contact.setImageURL(dto.ImageURL());
+			
+			log.debug("Update of " + name + " completed");
 		}
 		else // Create
 		{
-			if (dto.name() == null || dto.number() == null)
+			if (dto.name() == null || dto.surname() == null || dto.number() == null)
 			{
-				return null;
+				log.error("Incomplete creation body");
+				throw new IllegalContactUpsert(Illegal.INCOMPLETE);
 			}
+			
+			log.debug("Creation of new contact named " + dto.name());
 			
 			String uniqueId = UniqueIdGenerator.GenerateUniqueID();
 			contact = modelMapper.map(dto, Contact.class);
 			contact.setId(uniqueId);
+			
+			log.debug("Contact created" + contact);
 		}
 		
 		if (dto.tags() != null)
@@ -84,24 +131,6 @@ public class ContactsService
         return contactRepository.save(contact);
     }
 	
-	public ContactResponseDto toResponseDto(Contact contact)
-    {
-		if (contact == null) return null;
-		
-        return new ContactResponseDto(
-            contact.getId(),
-            contact.getName(),
-            contact.getSurname(),
-            contact.getNumber(),
-			contact.getLastUpdate(),
-			contact.getImageURL(),
-            contact.getTags().stream().map(Tag::getName).toArray(String[]::new)
-        );
-    }
-	
-	
-	
-
 	public boolean deleteContact(String contactId)
 	{
 		boolean bOutValue;
@@ -112,20 +141,18 @@ public class ContactsService
 		return bOutValue;
 	}
 
-	public void deleteAllById(List<String> ids)
+	public void deleteAllById(String[] ids)
 	{
 		contactRepository.deleteAllById(ids);
 	}
 
-	public Page<Contact> findAllById(List<String> contactsIds, int page, int size)
+	public Page<Contact> findAllById(String[] contactsIds, Pageable pageable)
 	{
-		Pageable pageable = PageRequest.of(page, size, kSort);
 		return contactRepository.findAllById(contactsIds, pageable);
 	}
 
-	public Page<Contact> findByName(String name, int page, int size)
+	public Page<Contact> findByName(String name, Pageable pageable)
 	{
-		Pageable pageable = PageRequest.of(page, size, kSort);
 		return contactRepository.findByName(name, pageable);
 	}
 
@@ -133,21 +160,58 @@ public class ContactsService
 	{
 		return contactRepository.findById(id);
 	}
-	public Page<Contact> findByNumber(String number, int page, int size)
+	public Page<Contact> findByNumber(String number, Pageable pageable)
 	{
-		Pageable pageable = PageRequest.of(page, size, kSort);
-		return contactRepository.findByNumber(number, pageable);
+		if (number.length() > 0)
+		{
+			return contactRepository.findByNumber(number, pageable);
+		}
+		return Page.empty();
 	}
 	
-	public Page<Contact> findByTag(String tagName, int page, int size)
+	public Page<Contact> findByTag(String tagName, Pageable pageable)
 	{
-		Pageable pageable = PageRequest.of(page, size, kSort);
 		return contactRepository.findByTags_Name(tagName, pageable);
 	}
 	
-	public Page<Contact> findByTags(List<String> tagNames, int page, int size)
+	public Page<Contact> findByTags(String[] tagNames, Pageable pageable)
 	{
-		Pageable pageable = PageRequest.of(page, size, kSort);
 		return contactRepository.findByTags_Names(tagNames, pageable);
+	}
+	
+	
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
+	
+	public class IllegalContactUpsert extends RuntimeException
+	{
+		public enum Illegal
+		{
+			NOT_FOUND,
+			INCOMPLETE
+		}
+		
+		public final Illegal illegal;
+		
+		public IllegalContactUpsert(Illegal InIllegal)
+		{
+			super();
+			
+			illegal = InIllegal;
+		}
+	}
+	
+	public static ContactResponseDto toResponseDto(Contact contact)
+	{
+		return new ContactResponseDto(
+			contact.getId(),
+			contact.getName(),
+			contact.getSurname(),
+			contact.getNumber(),
+			contact.getLastUpdate(),
+			contact.getImageURL(),
+			contact.getTags().stream().map(Tag::getName).toArray(String[]::new)
+		);
 	}
 }

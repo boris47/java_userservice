@@ -1,0 +1,15 @@
+              ORDERS
+DESCRIPTION    PRICE    QUANTITY
+tea				1.2			3
+coffee			1.7			2
+cake			2.5			4
+
+SELECT descr, price*quentity AS total FROM order WHERE price < 2 ORDER BY quantity
+
+
+
+
+SELECT
+INSERT
+UPDATE
+DELETE
