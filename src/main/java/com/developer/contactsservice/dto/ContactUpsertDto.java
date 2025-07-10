@@ -11,7 +11,8 @@ public record ContactUpsertDto
 	String name,
 	String surname,
 	@Pattern(
-		regexp = "^[+]?\\d{1,3}?[\\s.-]?\\(?\\d{1,4}\\)?[\\s.-]?\\d{1,4}[\\s.-]?\\d{1,9}$",
+		//regexp = "^[+]?\\d{1,3}?[\\s.-]?\\(?\\d{1,4}\\)?[\\s.-]?\\d{1,4}[\\s.-]?\\d{1,9}$",
+		regexp = "^[+]?\\d{9,15}$",
 		message = "Invalid phone number format"
 		// Accepts: +39 333 1234567, 3331234567, (02) 1234567, +1-800-123-4567
 	)

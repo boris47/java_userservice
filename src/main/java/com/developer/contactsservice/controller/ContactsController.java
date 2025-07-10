@@ -21,11 +21,10 @@ import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(ContactsController.BASE/*"/api/contacts"*/)
+@RequestMapping("/api/contacts")
 @RequiredArgsConstructor
 public class ContactsController
 {
-	public static final String BASE = "/api/contacts";
 	private static final int kPageDefaultSize = 10;
 	
 	// @RequestHeader -> Legge header HTTP
@@ -43,18 +42,13 @@ public class ContactsController
 	private final ContactsService contactsService;
 	
 	
-	private static final String _CONTACTS = "/contacts";
-	private static final String _FIND_ALL_BY_IDS = "/findAllByIds";
-	
-	public static final String CONTACTS() { return BASE + _CONTACTS; };
-	public static final String FIND_ALL_BY_IDS() { return BASE + _FIND_ALL_BY_IDS; };
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X GET http://localhost:8081/api/contacts/contacts
 	// Test -> curl -X GET http://localhost:8081/api/contacts/contacts?query=giacomo
 	// Test -> curl -X GET http://localhost:8081/api/contacts/contacts?query=giacomo&page=0&size=15
 	// Test -> curl -X GET http://localhost:8081/api/contacts/contacts?query=giacomo&page=0&size=15&sort=name,asc
-	@GetMapping(path = _CONTACTS,
+	@GetMapping(path = "/contacts",
 		produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	@ResponseBody
@@ -72,7 +66,7 @@ public class ContactsController
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X GET http://localhost:8081/api/contacts/massDelete?ids=ID1,ID2
-	@DeleteMapping(path = _CONTACTS, params = { "ids" },
+	@DeleteMapping(path = "/contacts", params = { "ids" },
 		produces = {MediaType.TEXT_PLAIN_VALUE}
 	)
 	public ResponseEntity<String> massDelete
@@ -87,7 +81,7 @@ public class ContactsController
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X GET http://localhost:8081/api/contacts/findAllByIds?ids=ID1,ID2
-	@GetMapping(path = _FIND_ALL_BY_IDS, params = { "ids" },
+	@GetMapping(path = "/findAllByIds", params = { "ids" },
 		produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<CustomPaginatedListModel<ContactResponseDto>> findAllByIds
@@ -103,24 +97,10 @@ public class ContactsController
 	}
 	
 	
-	private static final String _CONTACT = "/contact";
-	private static final String _FIND_BY_ID = "/findById";
-	private static final String _FIND_BY_NAME = "/findByName";
-	private static final String _FIND_BY_NUMBER = "/findByNumber";
-	private static final String _FIND_BY_TAG = "/findByTag";
-	private static final String _FIND_BY_TAGS = "/findByTags";
-	
-	public static String CONTACT() { return BASE + _CONTACT; }
-	public static String FIND_BY_ID() { return BASE + _FIND_BY_ID; }
-	public static String FIND_BY_NAME() { return BASE + _FIND_BY_NAME; }
-	public static String FIND_BY_NUMBER() { return BASE + _FIND_BY_NUMBER; }
-	public static String FIND_BY_TAG() { return BASE + _FIND_BY_TAG; }
-	public static String FIND_BY_TAGS() { return BASE + _FIND_BY_TAGS; }
-	
 	////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X POST http://localhost:8081/api/contacts/contact -H "Content-Type: application/json" -d "{\"name\":\"Mario\",\"surname\":\"Rossi\",\"number\":\"3334445678\"}"
 	// Test -> curl -X POST http://localhost:8081/api/contacts/contact -H "Content-Type: application/json" -d "{\"uniqueId\":\"XXXXXXXXXXXXX\",\"number\":\"3334445678\"}"
-	@PostMapping(path = _CONTACT,
+	@PostMapping(path = "/contact",
 		consumes = {MediaType.APPLICATION_JSON_VALUE},
 		produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
@@ -137,7 +117,7 @@ public class ContactsController
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X GET http://localhost:8081/api/contacts/contact?id=ID
-	@DeleteMapping(path = _CONTACT, params = { "id" },
+	@DeleteMapping(path = "/contact", params = { "id" },
 		produces = {MediaType.TEXT_PLAIN_VALUE}
 	)
 	public ResponseEntity<String> delete
@@ -156,7 +136,7 @@ public class ContactsController
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X GET http://localhost:8081/api/contacts/findById?id=ID1
-	@GetMapping(path = _FIND_BY_ID, params = { "id" },
+	@GetMapping(path = "/findById", params = { "id" },
 		produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<Contact> findById
@@ -171,7 +151,7 @@ public class ContactsController
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X GET http://localhost:8081/api/contacts/findByName?name=NAME
-	@GetMapping(path = _FIND_BY_NAME, params = { "name" },
+	@GetMapping(path = "/findByName", params = { "name" },
 		produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<CustomPaginatedListModel<ContactResponseDto>> findByName
@@ -188,7 +168,7 @@ public class ContactsController
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X GET http://localhost:8081/api/contacts/findByNumber?number=XYZ...
-	@GetMapping(path = _FIND_BY_NUMBER, params = { "number" },
+	@GetMapping(path = "/findByNumber", params = { "number" },
 		produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<CustomPaginatedListModel<ContactResponseDto>> findByNumber
@@ -205,7 +185,7 @@ public class ContactsController
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X GET http://localhost:8081/api/contacts/byTag?tag=family&page=0&size=15
-	@GetMapping(path = _FIND_BY_TAG, params = { "tag" },
+	@GetMapping(path = "/findByTag", params = { "tag" },
 		produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<CustomPaginatedListModel<ContactResponseDto>> findByTag
@@ -222,7 +202,7 @@ public class ContactsController
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Test -> curl -X GET http://localhost:8081/api/contacts/findByTags?tags=work,family&page=0&size=15
-	@GetMapping(path = _FIND_BY_TAGS, params = { "tags" },
+	@GetMapping(path = "/findByTags", params = { "tags" },
 		produces = {MediaType.APPLICATION_JSON_VALUE}
 	)
 	public ResponseEntity<CustomPaginatedListModel<ContactResponseDto>> findByTags

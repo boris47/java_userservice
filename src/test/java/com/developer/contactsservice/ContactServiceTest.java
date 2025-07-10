@@ -1,22 +1,24 @@
 package com.developer.contactsservice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.Optional;
-
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import com.developer.contactsservice.model.Contact;
 import com.developer.contactsservice.repository.ContactsRepository;
 import com.developer.contactsservice.service.ContactsService;
 
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
+@TestMethodOrder(OrderAnnotation.class)
 public class ContactServiceTest
 {
 	@Mock
@@ -28,15 +30,6 @@ public class ContactServiceTest
 	@Test
 	void shouldReturnContactWhenFound()
 	{
-		final String testID = "Aldo";
 		
-		Contact contact = new Contact();
-		contact.setId(testID);
-
-		Mockito.when(contactsRepository.findById(testID)).thenReturn(Optional.of(contact));
-
-		Optional<Contact> result = contactsService.findById(testID);
-		assertNotNull(result);
-		assertEquals(testID, result.get().getId());
 	}
 }

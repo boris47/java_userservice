@@ -2,7 +2,6 @@ package com.developer.contactsservice;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -20,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.developer.contactsservice.controller.ContactsController;
 import com.developer.contactsservice.dto.ContactResponseDto;
 import com.developer.contactsservice.dto.ContactUpsertDto;
 import com.developer.contactsservice.model.CustomPaginatedListModel;
@@ -95,14 +93,13 @@ class ContactIntegrationTest
 	{
 		System.out.println("----- Test_002_ShouldCreateAndRetrieveAndDeleteContact");
 		{
-			final var req = post(ContactsController.CONTACT())
+			final var req = post("/api/contacts/contact")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(validJsonUpsert)
 			;	
 			try {
 				mockMvc.perform(req)
 					.andExpect(status().isCreated())
-					.andReturn()
 				;
 			}
 			catch (Exception e)
@@ -112,12 +109,11 @@ class ContactIntegrationTest
 		}
 		
 		{
-			final String contactName = "Roberto";
 			String uniqueID = null;
 			
 			{
-				var req = get(ContactsController.CONTACTS())
-					.param("query", contactName)
+				var req = get("/api/contacts/contacts")
+					.param("query", "Roberto")
 					.param("page", "0")
 					.param("size", "3")
 				;
@@ -125,7 +121,7 @@ class ContactIntegrationTest
 					var result = mockMvc.perform(req)
 						.andExpect(status().isOk())
 						// .andDo(print())
-						.andExpect(jsonPath("$.data[0].name").value(contactName))
+						.andExpect(jsonPath("$.data[0].name").value("Roberto"))
 						.andReturn()
 					;
 					String jsonStr = result.getResponse().getContentAsString();
@@ -151,7 +147,9 @@ class ContactIntegrationTest
 			
 			if (uniqueID != null)
 			{
-				var req = delete(ContactsController.CONTACT()).param("id", uniqueID);
+				var req = delete("/api/contacts/contact")
+					.param("id", uniqueID)
+				;
 				try {
 					mockMvc.perform(req)
 						.andExpect(status().is(HttpStatus.NO_CONTENT.value()))
